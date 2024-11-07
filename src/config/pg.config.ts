@@ -3,11 +3,11 @@ require('dotenv').config();
 
 const databaseConfig: TypeOrmModuleOptions = {
     type: "postgres",
-    host: process.env.PG_Host,
+    host: process.env.PG_HOST,
     port: 5432,
     username: process.env.PG_USER,
     password: process.env.PG_PASSWORD,
-    database: process.env.PG_Databse,
+    database: process.env.PG_Database,
     synchronize: true,
     logging: false,
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],

@@ -8,10 +8,17 @@ import { OrderModule } from './modules/order/order.module';
 import { OrderItemModule } from './modules/order_item/order_item.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { UserModule } from './modules/user/user.module';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import databaseConfig from './config/pg.config';
 
 @Module({
-  imports: [AuthModule, CategoryModule, BookModule, OrderModule, OrderItemModule, PaymentModule, UserModule],
+  imports: [ConfigModule.forRoot({
+    isGlobal: true,
+  }),
+  TypeOrmModule.forRoot(databaseConfig),
+    AuthModule, CategoryModule, BookModule, OrderModule, OrderItemModule, PaymentModule, UserModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
