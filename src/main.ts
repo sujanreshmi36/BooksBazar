@@ -14,8 +14,8 @@ async function bootstrap() {
 
   // Swagger setup
   const config = new DocumentBuilder()
-    .setTitle('ScanMenu')
-    .setDescription('API Documentation for ScanMenu')
+    .setTitle('BooksBazar')
+    .setDescription('API Documentation for BooksBazar')
     .setVersion('1.0')
     .addBearerAuth(
       {

@@ -15,7 +15,7 @@ export class userEntity extends parentEntity {
     @Column()
     password: string;
 
-    @Column()
+    @Column({ default: roleType.customer })
     role: roleType;
 
 
