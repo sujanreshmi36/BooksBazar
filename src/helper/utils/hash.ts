@@ -13,5 +13,5 @@ export class hash {
 
     async verifyHashing(originalData: string, newData: string): Promise<boolean> {
         return await argon.verify(originalData, newData)
-    } 
+    }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+// import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
 import { v2 as cloudinary, UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 
