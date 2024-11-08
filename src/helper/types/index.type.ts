@@ -5,17 +5,14 @@ export enum roleType {
     customer = 'customer'
 }
 
-export enum enrollStatus {
-    approved = "approved",
-    pending = "pending",
-    reject = "reject"
+export enum BookConditon {
+    NEW = "New",
+    LIKE_NEW = "Like New",
+    VERY_GOOD = "Very Good",
+    GOOD = "Good",
+    ACCEPTABLE = "Acceptable",
+    POOR = "Poor"
 }
-
-export enum tableStatus {
-    occupied = 'occupied',
-    available = 'available'
-}
-
 
 export enum orderStatus {
     pending = 'pending',
@@ -25,10 +22,6 @@ export enum orderStatus {
     canceled = "canceled"
 }
 
-export enum callType {
-    incoming = 'incoming',
-    outgoing = 'outgoing'
-}
 
 export enum documentType {
     citizenship = "citizenship",

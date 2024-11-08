@@ -1,7 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString } from "class-validator";
+import { IsString, IsEnum } from "class-validator";
+import { roleType } from "src/helper/types/index.type";
 
-export class CreateUserDto {
+export class CreateSellerDto {
 
     @ApiProperty()
     @IsString()
@@ -10,6 +11,7 @@ export class CreateUserDto {
     @ApiProperty()
     @IsString()
     password: string;
+
 
 
 }

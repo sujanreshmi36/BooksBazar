@@ -14,6 +14,7 @@ import { loginUserDto } from './dto/login-user.dto';
 import { JwtPayload } from 'jsonwebtoken';
 import { forgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { roleType } from 'src/helper/types/index.type';
 
 @Injectable()
 export class AuthService {
@@ -74,13 +75,44 @@ export class AuthService {
       if (existingUser) {
         throw new ConflictException('Email address is already in use');
       }
-      const salt = 10;
       const hashedPassword = await this.hashService.value(createUserDto.password);
       const user = new userEntity();
       user.email = email;
       user.password = hashedPassword;
       user.name = createUserDto.name;
-      user.role = createUserDto.role;
+      const savedUser = await this.userRepo.save(user);
+      return {
+        message: "Registered Successfully.",
+        data: savedUser
+      }
+
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
+  }
+
+  // Register a new seller
+  async createseller(createUserDto: CreateUserDto, token: string) {
+    try {
+      token = token.split(' ')[1];
+      let decodedToken;
+
+      decodedToken = await jwt.verify(token, process.env.AT_SECRET);
+      if (!decodedToken) {
+        throw new ForbiddenException("Token malformed")
+      }
+      const { email } = decodedToken;
+      const existingUser = await this.userRepo.findOne({ where: { email } });
+
+      if (existingUser) {
+        throw new ConflictException('Email address is already in use');
+      }
+      const hashedPassword = await this.hashService.value(createUserDto.password);
+      const user = new userEntity();
+      user.email = email;
+      user.password = hashedPassword;
+      user.name = createUserDto.name;
+      user.role = roleType.seller;
       const savedUser = await this.userRepo.save(user);
       return {
         message: "Registered Successfully.",
