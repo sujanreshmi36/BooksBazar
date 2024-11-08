@@ -78,6 +78,7 @@ export enum genderType {
 export type JwtPayload = {
     email: string;
     role?: string;
+    id?: string;
 };
 
 export interface clientEventId {

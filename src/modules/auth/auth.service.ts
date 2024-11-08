@@ -26,7 +26,7 @@ export class AuthService {
   ) { }
 
   private roleUser = {
-    admin: 'restaurant',
+    admin: 'admin',
     seller: 'seller',
     customer: 'customer'
   }
@@ -106,8 +106,8 @@ export class AuthService {
       }
       const userRole = this.roleUser[authUser.role];
       const tokens = {
-        accessToken: await this.tokenService.generateAcessToken({ email: email, role: authUser.role }),
-        refreshToken: await this.tokenService.generateRefreshToken({ email: email, role: authUser.role }),
+        accessToken: await this.tokenService.generateAcessToken({ email: email, role: userRole, id: authUser.id }),
+        refreshToken: await this.tokenService.generateRefreshToken({ email: email, role: userRole, id: authUser.id }),
         role: authUser.role
       }
       authUser.rToken = await this.hashService.value(tokens.refreshToken)

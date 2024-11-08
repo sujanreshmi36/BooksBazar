@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -23,8 +23,9 @@ export class CategoryController {
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'create category' })
   @ApiBody({ type: CreateCategoryDto })
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.create(createCategoryDto);
+  create(@Body() createCategoryDto: CreateCategoryDto, @Req() req: any) {
+    const id = req.user.id;
+    return this.categoryService.create(id, createCategoryDto);
   }
 
   @Get()
@@ -37,10 +38,6 @@ export class CategoryController {
   //   return this.categoryService.findOne(+id);
   // }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
-  //   return this.categoryService.update(+id, updateCategoryDto);
-  // }
 
   @Patch(':id')
   @Roles(roleType.admin)

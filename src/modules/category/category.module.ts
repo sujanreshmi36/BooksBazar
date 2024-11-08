@@ -6,9 +6,10 @@ import { categoryEntity } from 'src/model/category.entity';
 import { JwtService } from '@nestjs/jwt';
 import { AtStrategy } from 'src/middlewares/access_token/at.strategy';
 import { RtStrategy } from 'src/middlewares/refresh_token/rt.strategy';
+import { userEntity } from 'src/model/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([categoryEntity])],
+  imports: [TypeOrmModule.forFeature([categoryEntity, userEntity])],
   controllers: [CategoryController],
   providers: [CategoryService, AtStrategy, RtStrategy, JwtService],
 })
