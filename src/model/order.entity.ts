@@ -7,7 +7,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { parentEntity } from '.';
-import { categoryEntity } from './Category.entity';
+import { categoryEntity } from './category.entity';
 import { orderStatus, paymentMethod } from 'src/helper/types/index.type';
 import { userEntity } from './user.entity';
 import { orderItemEntity } from './order_item.entity';

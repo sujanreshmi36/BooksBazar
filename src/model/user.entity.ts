@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import { parentEntity } from '.';
 import { roleType } from 'src/helper/types/index.type';
-import { categoryEntity } from './Category.entity';
+import { categoryEntity } from './category.entity';
 import { orderEntity } from './order.entity';
 
 @Entity('User')
