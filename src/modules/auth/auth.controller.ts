@@ -8,8 +8,8 @@ import { loginUserDto } from './dto/login-user.dto';
 import { RtGuard } from 'src/middlewares/refresh_token/rt.guard';
 import { forgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { CreateSellerDto } from './dto/create-seller.dto';
 
-@Controller('auth')
 @ApiTags('Auth')
 @ApiResponse({ status: 201, description: 'Created Successfully' })
 @ApiResponse({ status: 401, description: 'Unathorised request' })
@@ -38,6 +38,18 @@ export class AuthController {
       throw new ForbiddenException("Insufficient payload")
     }
     return this.authService.create(createUserDto, token);
+  }
+
+  @Post('create-seller')
+  @ApiOperation({ summary: 'create your account' })
+  @ApiBody({ type: CreateUserDto })
+  createseller(@Body() createSellerDto: CreateSellerDto,
+    @Headers('Authorization') token: string) {
+
+    if (!token) {
+      throw new ForbiddenException("Insufficient payload")
+    }
+    return this.authService.createseller(createSellerDto, token);
   }
 
 
