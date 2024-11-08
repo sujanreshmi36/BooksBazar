@@ -1,26 +1,70 @@
-import { Injectable } from '@nestjs/common';
+
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { categoryEntity } from 'src/model/Category.entity';
+
 
 @Injectable()
 export class CategoryService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  constructor(
+    @InjectRepository(categoryEntity)
+    private categoryRepo: Repository<categoryEntity>
+  ) { }
+
+  async create(createCategoryDto: CreateCategoryDto,) {
+
+    // Create and save the new category
+    const category = new categoryEntity();
+    category.name = createCategoryDto.name;
+    category.description = createCategoryDto.description
+
+    const savedCategory = await this.categoryRepo.save(category);
+
+    return {
+      message: "Category added successfully.",
+      data: savedCategory,
+    };
   }
 
-  findAll() {
-    return `This action returns all category`;
+
+  async findAll() {
+    return await this.categoryRepo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  // async findAllByToken(restaurantid: string, paginationDto?: PaginationDto) {
+  //   const { page, pageSize } = paginationDto || {};
+  //   if (page && pageSize) {
+  //     const [pagedCategory, count] = await this.categoryRepo.findAndCount({
+  //       where: { restaurant: { id: restaurantid } },
+  //       skip: (page - 1) * pageSize,
+  //       take: pageSize,
+  //     });
+  //     return { total: count, pagedCategory };
+  //   }
+  //   return await this.categoryRepo.find(
+  //     { where: { restaurant: { id: restaurantid } } });
+  // }
+
+  // async findOne(id: string) {
+  //   const category = await this.categoryRepo.findOne({ where: { id } });
+  //   return category;
+  // }
+
+  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
+    const category = await this.categoryRepo.findOne({ where: { id } });
+    const updatedCategory = Object.assign(category, updateCategoryDto);
+    return await this.categoryRepo.save(updatedCategory);
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
-  }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+
+  async remove(id: string) {
+    const category = await this.categoryRepo.findOne({ where: { id } });
+    return await this.categoryRepo.remove(category);
   }
 }
+
+

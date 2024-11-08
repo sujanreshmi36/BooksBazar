@@ -11,9 +11,6 @@ export class categoryEntity extends parentEntity {
     @Column()
     description: string;
 
-    @ManyToOne(() => userEntity, (user) => user.categories)
-    user: userEntity;
-
     @ManyToMany(() => bookEntity, (books) => books.categories)
     books: bookEntity[];
 

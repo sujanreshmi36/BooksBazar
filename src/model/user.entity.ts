@@ -22,8 +22,6 @@ export class userEntity extends parentEntity {
     @Column({ default: null })
     rToken: string;
 
-    @OneToMany(() => categoryEntity, (category) => category.user)
-    categories: categoryEntity[];
 
 
     @OneToMany(() => orderEntity, (order) => order.user)
