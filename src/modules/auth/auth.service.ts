@@ -46,7 +46,35 @@ export class AuthService {
 
         // Construct verification URL
         const frontURL = this.config.get<string>('frontURL');
-        const url = `${frontURL}/signup/register/${token}`;
+        const url = `${frontURL}/signup/create-customer/${token}`;
+        const message = `<p>Please verify your email by clicking on the following link: <a href="${url}">Verify Email</a></p>`;
+
+        // Send the verification email
+        await sendMail(email, 'Email Verification', message);
+
+        return "Verification email has been sent";
+      }
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
+  }
+
+  async verifySeller(verifyEmailDto: verifyEmailDTO) {
+    try {
+      const { email } = verifyEmailDto;
+      const existingUser = await this.userRepo.findOne({
+        where: { email: email }
+      });
+
+      if (existingUser) {
+        throw new ForbiddenException("User already exists.");
+      } else {
+        // Generate an access token for email verification
+        const token = await this.tokenService.generateAcessToken({ email });
+
+        // Construct verification URL
+        const frontURL = this.config.get<string>('frontURL');
+        const url = `${frontURL}/signup/create-seller/${token}`;
         const message = `<p>Please verify your email by clicking on the following link: <a href="${url}">Verify Email</a></p>`;
 
         // Send the verification email

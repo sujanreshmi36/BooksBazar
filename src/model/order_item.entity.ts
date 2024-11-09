@@ -9,14 +9,15 @@ export class orderItemEntity extends parentEntity {
     @Column()
     quantity: number;
 
-    @Column({ default: orderStatus.pending })
-    status: orderStatus;
+    @Column()
+    price: number;
 
-    @ManyToOne(() => bookEntity, (book) => book.orderItem, { onDelete: 'CASCADE' })
-    books: bookEntity[];
+    @ManyToOne(() => bookEntity, (book) => book.orderItems, { onDelete: 'CASCADE' })
+    book: bookEntity;
 
     @ManyToOne(() => orderEntity, (order) => order.orderItem, { onDelete: 'CASCADE' })
     order: orderEntity;
+    orderItem: bookEntity;
 
 
 }

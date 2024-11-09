@@ -34,6 +34,6 @@ export class bookEntity extends parentEntity {
     @JoinTable({ name: 'category_bookId' })
     categories: categoryEntity[];
 
-    @OneToMany(() => orderItemEntity, (order) => order.books)
-    orderItem: orderItemEntity[];
+    @OneToMany(() => orderItemEntity, (order) => order.book)
+    orderItems: orderItemEntity[];
 }
