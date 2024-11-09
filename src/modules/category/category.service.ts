@@ -1,13 +1,9 @@
-<<<<<<< HEAD
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-=======
-
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
->>>>>>> b48a54d986ffed0ad20a4edc86a36a9ac7c85ec0
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,7 +23,9 @@ export class CategoryService {
   async create(id: string, createCategoryDto: CreateCategoryDto) {
     const admin = await this.userRepo.findOne({ where: { id } });
 
-    const existingCategory = await this.categoryRepo.findOne({ where: { name: createCategoryDto.name } })
+    const existingCategory = await this.categoryRepo.findOne({
+      where: { name: createCategoryDto.name },
+    });
     if (existingCategory) {
       throw new ConflictException('This category is already added');
     }

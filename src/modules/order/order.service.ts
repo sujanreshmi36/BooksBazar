@@ -24,7 +24,7 @@ export class OrderService {
     @InjectRepository(bookEntity)
     private readonly bookRepository: Repository<bookEntity>,
     private dataSource: DataSource,
-  ) { }
+  ) {}
 
   async create(id: string, createOrderDto: CreateOrderDto) {
     const queryRunner = this.dataSource.createQueryRunner();
@@ -53,7 +53,9 @@ export class OrderService {
       const orderItems = await Promise.all(
         orderItem.map(async (item) => {
           // Fetch the book entity by ID
-          const book = await this.bookRepository.findOne({ where: { id: item.book } });
+          const book = await this.bookRepository.findOne({
+            where: { id: item.book },
+          });
           if (!book) {
             throw new Error(`Book with ID ${item.book} not found`);
           }
@@ -64,7 +66,7 @@ export class OrderService {
           orderItem.quantity = item.quantity;
           orderItem.order = order; // Set the order relationship
           return orderItem;
-        })
+        }),
       );
 
       // Save the order items
@@ -94,7 +96,6 @@ export class OrderService {
     return order;
   }
 
-
   findAll() {
     return `This action returns all order`;
   }
@@ -109,6 +110,5 @@ export class OrderService {
   async remove(id: string) {
     await this.orderRepository.delete({ id });
     return true;
-
   }
 }
