@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Headers, ForbiddenException, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UpdateAuthDto } from './dto/update-auth.dto';
-import { ApiTags, ApiResponse, ApiOperation, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiOperation, ApiBody, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
 import { verifyEmailDTO } from './dto/verify-email.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { loginUserDto } from './dto/login-user.dto';
@@ -39,6 +39,7 @@ export class AuthController {
   @Post('create-customer')
   @ApiOperation({ summary: 'create your customer account' })
   @ApiBody({ type: CreateUserDto })
+  @ApiHeader({ name: 'Authorization', description: 'Bearer token', required: true })
   create(@Body() createUserDto: CreateUserDto,
     @Headers('Authorization') token: string) {
     console.log(token);
@@ -51,7 +52,8 @@ export class AuthController {
 
   @Post('create-seller')
   @ApiOperation({ summary: 'create your seller account' })
-  @ApiBody({ type: CreateUserDto })
+  @ApiBody({ type: CreateSellerDto })
+  @ApiHeader({ name: 'Authorization', description: 'Bearer token', required: true })
   createseller(@Body() createSellerDto: CreateSellerDto,
     @Headers('Authorization') token: string) {
 
