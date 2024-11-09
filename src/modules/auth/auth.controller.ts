@@ -9,6 +9,7 @@ import { RtGuard } from 'src/middlewares/refresh_token/rt.guard';
 import { forgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { CreateSellerDto } from './dto/create-seller.dto';
+import { CreateAdminDto } from './dto/create-admin.dto';
 
 @ApiTags('Auth')
 @ApiResponse({ status: 201, description: 'Created Successfully' })
@@ -64,6 +65,19 @@ export class AuthController {
     return this.authService.createseller(createSellerDto, token);
   }
 
+  @Post('create-admin')
+  @ApiOperation({ summary: 'create your admin account' })
+  @ApiBody({ type: CreateAdminDto })
+  @ApiHeader({ name: 'Authorization', description: 'Bearer token', required: true })
+  createAdmin(@Body() createAdminDto: CreateAdminDto,
+    @Headers('Authorization') token: string) {
+
+
+    if (!token) {
+      throw new ForbiddenException("Insufficient payload")
+    }
+    return this.authService.createAdmin(createAdminDto, token);
+  }
 
   @Post('signin')
   @ApiOperation({ summary: 'SignIn your Account' })

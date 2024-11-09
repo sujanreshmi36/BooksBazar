@@ -24,8 +24,8 @@ export class orderEntity extends parentEntity {
   @OneToOne(() => paymentEntity, (payment) => payment.order)
   payment: paymentEntity;
 
-  @ManyToOne(() => userEntity, (user) => user.orders)
-  user: userEntity;
+  @Column()
+  phone: string;
 
   @OneToMany(() => orderItemEntity, (item) => item.order)
   orderItem: orderItemEntity[];
