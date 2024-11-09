@@ -15,6 +15,9 @@ export class orderEntity extends parentEntity {
     @Column()
     shipping_address: string;
 
+    @Column()
+    phone: string;
+
     @OneToOne(() => paymentEntity, (payment) => payment.order)
     payment: paymentEntity;
 

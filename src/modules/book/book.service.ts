@@ -74,6 +74,22 @@ export class BookService {
 
   }
 
+  async findAllByCategory(id: string, paginationDto?: PaginationDto,) {
+    const { page, pageSize } = paginationDto;
+    if (page && pageSize) {
+      const [pagedProducts, total] = await this.bookRepo.findAndCount({
+        where: { categories: { id } },
+        relations: ['categories'],
+        skip: (page - 1) * pageSize,
+        take: pageSize
+      });
+      return { total, pagedProducts };
+    } else {
+      return await this.bookRepo.find({ where: { categories: { id } }, relations: ['categories'] });
+    }
+
+  }
+
 
 
 

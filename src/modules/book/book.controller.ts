@@ -65,6 +65,13 @@ export class BookController {
     return this.bookService.findAllBy(id, paginationDto);
   }
 
+  @Get("get-by-category/:id")
+  @ApiOperation({ summary: 'get all products by category ' })
+  findAllByCategory(@Param('id') id: string, @Query() paginationDto?: PaginationDto
+  ) {
+    return this.bookService.findAllByCategory(id, paginationDto);
+  }
+
   @Patch(':id')
   @Roles(roleType.seller)
   @UseGuards(AtGuard, RolesGuard)

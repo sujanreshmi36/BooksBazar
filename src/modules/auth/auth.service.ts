@@ -15,6 +15,7 @@ import { JwtPayload } from 'jsonwebtoken';
 import { forgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { roleType } from 'src/helper/types/index.type';
+import { CreateAdminDto } from './dto/create-admin.dto';
 
 @Injectable()
 export class AuthService {
@@ -108,6 +109,39 @@ export class AuthService {
       user.email = email;
       user.password = hashedPassword;
       user.name = createUserDto.name;
+      const savedUser = await this.userRepo.save(user);
+      return {
+        message: "Registered Successfully.",
+        data: savedUser
+      }
+
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
+  }
+
+  // Register a new admin
+  async createAdmin(createAdminDto: CreateAdminDto, token: string) {
+    try {
+      token = token.split(' ')[1];
+      let decodedToken;
+
+      decodedToken = await jwt.verify(token, process.env.AT_SECRET);
+      if (!decodedToken) {
+        throw new ForbiddenException("Token malformed")
+      }
+      const { email } = decodedToken;
+      const existingUser = await this.userRepo.findOne({ where: { email } });
+
+      if (existingUser) {
+        throw new ConflictException('Email address is already in use');
+      }
+      const hashedPassword = await this.hashService.value(createAdminDto.password);
+      const user = new userEntity();
+      user.email = email;
+      user.password = hashedPassword;
+      user.name = createAdminDto.name;
+      user.role = roleType.admin;
       const savedUser = await this.userRepo.save(user);
       return {
         message: "Registered Successfully.",
