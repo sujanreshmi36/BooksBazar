@@ -46,7 +46,7 @@ export class AuthService {
 
         // Construct verification URL
         const frontURL = this.config.get<string>('frontURL');
-        const url = `${frontURL}/signup/create-customer/${token}`;
+        const url = `${frontURL}/cutomer-verified/${token}`;
         const message = `<p>Please verify your email by clicking on the following link: <a href="${url}">Verify Email</a></p>`;
 
         // Send the verification email
@@ -74,7 +74,7 @@ export class AuthService {
 
         // Construct verification URL
         const frontURL = this.config.get<string>('frontURL');
-        const url = `${frontURL}/signup/create-seller/${token}`;
+        const url = `${frontURL}/seller-verified/${token}`;
         const message = `<p>Please verify your email by clicking on the following link: <a href="${url}">Verify Email</a></p>`;
 
         // Send the verification email
