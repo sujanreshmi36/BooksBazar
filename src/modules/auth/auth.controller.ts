@@ -27,8 +27,17 @@ export class AuthController {
     return this.authService.getVerify(verifyEmailDto);
   }
 
-  @Post('create')
-  @ApiOperation({ summary: 'create your account' })
+  //get email for verification
+  @Post('verify-seller')
+  @ApiOperation({ summary: 'get your email verified' })
+  @ApiBody({ type: verifyEmailDTO })
+  Verify(@Body() verifyEmailDto: verifyEmailDTO) {
+    return this.authService.verifySeller(verifyEmailDto);
+  }
+
+
+  @Post('create-customer')
+  @ApiOperation({ summary: 'create your customer account' })
   @ApiBody({ type: CreateUserDto })
   create(@Body() createUserDto: CreateUserDto,
     @Headers('Authorization') token: string) {
@@ -41,10 +50,11 @@ export class AuthController {
   }
 
   @Post('create-seller')
-  @ApiOperation({ summary: 'create your account' })
+  @ApiOperation({ summary: 'create your seller account' })
   @ApiBody({ type: CreateUserDto })
   createseller(@Body() createSellerDto: CreateSellerDto,
     @Headers('Authorization') token: string) {
+
 
     if (!token) {
       throw new ForbiddenException("Insufficient payload")

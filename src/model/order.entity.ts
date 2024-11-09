@@ -15,10 +15,7 @@ import { paymentEntity } from './payment.entity';
 
 @Entity('Order')
 export class orderEntity extends parentEntity {
-  @Column()
-  total_price: string;
-
-  @Column()
+  @Column({ default: orderStatus.pending })
   status: orderStatus;
 
   @Column()
