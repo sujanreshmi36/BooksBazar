@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -32,7 +32,7 @@ export class OrderService {
     await queryRunner.startTransaction();
 
     try {
-      const { shipping_address, orderItem } = createOrderDto;
+      const { shipping_address, orderItem, phone } = createOrderDto;
 
       // Find the customer
       const customer = await this.userRepository.findOne({ where: { id } });
@@ -45,7 +45,7 @@ export class OrderService {
       order.user = customer;
       order.status = orderStatus.pending;
       order.shipping_address = shipping_address;
-
+      order.phone = phone;
       // Save the order
       await queryRunner.manager.save(order);
 
@@ -84,18 +84,24 @@ export class OrderService {
       await queryRunner.release();
     }
   }
+  // 2. Get Order by ID
+  async findOne(orderId: string) {
+    const order = await this.orderRepository.findOne({
+      where: { id: orderId },
+      relations: ['user', 'orderItem', 'orderItem.book'],
+    });
+    if (!order) throw new NotFoundException('Order not found');
+    return order;
+  }
 
-  // create(createOrderDto: CreateOrderDto) {
-  //   return 'This action adds a new order';
-  // }
 
   findAll() {
     return `This action returns all order`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
-  }
+  // findOne(id: number) {
+  //   return `This action returns a #${id} order`;
+  // }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
     return `This action updates a #${id} order`;

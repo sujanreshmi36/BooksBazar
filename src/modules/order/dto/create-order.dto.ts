@@ -23,6 +23,11 @@ export class CreateOrderDto {
     @IsString()
     shipping_address: string;
 
+    @ApiProperty({ description: "Phone for the order" })
+    @IsString()
+    phone: string;
+
+
     @IsOptional()
     @ApiProperty({ type: [OrderInfo], description: "List of items in the order" })
     @IsArray()
