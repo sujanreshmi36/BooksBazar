@@ -13,4 +13,4 @@ import { userEntity } from 'src/model/user.entity';
   controllers: [CategoryController],
   providers: [CategoryService, AtStrategy, RtStrategy, JwtService],
 })
-export class CategoryModule { }
+export class CategoryModule {}
