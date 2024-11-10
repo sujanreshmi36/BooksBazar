@@ -10,6 +10,7 @@ import { parentEntity } from '.';
 import { categoryEntity } from './category.entity';
 import { orderItemEntity } from './order_item.entity';
 import { BookConditon } from 'src/helper/types/index.type';
+import { viewEntity } from './view.entity';
 
 @Entity('Book')
 export class bookEntity extends parentEntity {
@@ -43,4 +44,9 @@ export class bookEntity extends parentEntity {
 
   @OneToMany(() => orderItemEntity, (order) => order.book)
   orderItems: orderItemEntity[];
+
+  @OneToMany(() => viewEntity, (view) => view.book)
+  views: viewEntity[];
+
+
 }

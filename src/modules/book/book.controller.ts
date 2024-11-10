@@ -47,8 +47,6 @@ export class BookController {
     file?: Express.Multer.File,
   ) {
 
-    console.log(createBookDto);
-
     const id = req.user.id;
     const s3response = await this.uploadService.upload(file);
 
@@ -63,6 +61,11 @@ export class BookController {
   ) {
     const id = req.user.sub;
     return this.bookService.findAllBy(id, paginationDto);
+  }
+
+  @Get('recommendations')
+  async getRecommendations(@Query('userId') userId: string) {
+    return this.bookService.recommendBooks(userId);
   }
 
   @Get(':id')
