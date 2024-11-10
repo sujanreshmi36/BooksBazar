@@ -43,19 +43,7 @@ export class CategoryService {
     return await this.categoryRepo.find();
   }
 
-  // async findAllByToken(restaurantid: string, paginationDto?: PaginationDto) {
-  //   const { page, pageSize } = paginationDto || {};
-  //   if (page && pageSize) {
-  //     const [pagedCategory, count] = await this.categoryRepo.findAndCount({
-  //       where: { restaurant: { id: restaurantid } },
-  //       skip: (page - 1) * pageSize,
-  //       take: pageSize,
-  //     });
-  //     return { total: count, pagedCategory };
-  //   }
-  //   return await this.categoryRepo.find(
-  //     { where: { restaurant: { id: restaurantid } } });
-  // }
+
 
   // async findOne(id: string) {
   //   const category = await this.categoryRepo.findOne({ where: { id } });

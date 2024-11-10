@@ -57,6 +57,13 @@ export class BookService {
     };
   }
 
+  async findOne(id: string) {
+    const book = await this.bookRepo.findOne({ where: { id } });
+    if (!book) {
+      throw new BadRequestException("Book not found");
+    }
+    return book;
+  }
 
   async findAllBy(id: string, paginationDto?: PaginationDto,) {
     const { page, pageSize } = paginationDto;

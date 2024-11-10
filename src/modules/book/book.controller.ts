@@ -65,6 +65,12 @@ export class BookController {
     return this.bookService.findAllBy(id, paginationDto);
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'get book by id ' })
+  findOne(@Param('id') id: string) {
+    return this.bookService.findOne(id);
+  }
+
   @Get("get-by-category/:id")
   @ApiOperation({ summary: 'get all products by category ' })
   findAllByCategory(@Param('id') id: string, @Query() paginationDto?: PaginationDto
