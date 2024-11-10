@@ -21,5 +21,4 @@ export class orderItemEntity extends parentEntity {
     onDelete: 'CASCADE',
   })
   order: orderEntity;
-  orderItem: bookEntity;
 }

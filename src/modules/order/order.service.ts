@@ -24,7 +24,7 @@ export class OrderService {
     @InjectRepository(bookEntity)
     private readonly bookRepository: Repository<bookEntity>,
     private dataSource: DataSource,
-  ) {}
+  ) { }
 
   async create(id: string, createOrderDto: CreateOrderDto) {
     const queryRunner = this.dataSource.createQueryRunner();
