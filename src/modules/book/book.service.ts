@@ -5,7 +5,7 @@ import { bookEntity } from 'src/model/book.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { categoryEntity } from 'src/model/category.entity';
 import { userEntity } from 'src/model/user.entity';
-import { In, Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import { PaginationDto } from 'src/helper/utils/pagination.dto';
 import { viewEntity } from 'src/model/view.entity';
 
@@ -101,7 +101,14 @@ export class BookService {
   }
 
 
-
+  async searchBooks(query: string): Promise<bookEntity[]> {
+    return await this.bookRepo.find({
+      where: [
+        { title: Like(`%${query}%`) },
+        { author: Like(`%${query}%`) },
+      ],
+    });
+  }
 
   async update(id: string, updateBookDto: UpdateBookDto) {
     const product = await this.bookRepo.findOne({ where: { id: id } });

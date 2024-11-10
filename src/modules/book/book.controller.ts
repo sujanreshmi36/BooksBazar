@@ -68,6 +68,11 @@ export class BookController {
     return this.bookService.recommendBooks(userId);
   }
 
+  @Get('search')
+  async search(@Query('query') query: string) {
+    return this.bookService.searchBooks(query);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'get book by id ' })
   findOne(@Param('id') id: string) {
