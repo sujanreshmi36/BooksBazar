@@ -82,7 +82,7 @@ export class BookService {
   async findAllBy(id: string, paginationDto?: PaginationDto) {
     const { page, pageSize } = paginationDto;
     if (page && pageSize) {
-      const [pagedProducts, total] = await this.userRepo.findAndCount({
+      const [pagedProducts, total] = await this.bookRepo.findAndCount({
         where: { categories: { user: { id } } },
         relations: ['categories'],
         skip: (page - 1) * pageSize,
