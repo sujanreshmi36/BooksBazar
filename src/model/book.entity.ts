@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { parentEntity } from '.';
-import { categoryEntity } from './category.entity';
+import { categoryEntity } from './Category.entity';
 import { orderItemEntity } from './order_item.entity';
 import { BookConditon } from 'src/helper/types/index.type';
 import { viewEntity } from './view.entity';
@@ -47,6 +47,4 @@ export class bookEntity extends parentEntity {
 
   @OneToMany(() => viewEntity, (view) => view.book)
   views: viewEntity[];
-
-
 }

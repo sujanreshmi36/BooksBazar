@@ -7,7 +7,7 @@ import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { bookEntity } from 'src/model/book.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { categoryEntity } from 'src/model/category.entity';
+import { categoryEntity } from 'src/model/Category.entity';
 import { userEntity } from 'src/model/user.entity';
 import { In, Like, Repository } from 'typeorm';
 import { PaginationDto } from 'src/helper/utils/pagination.dto';
