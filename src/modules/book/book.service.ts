@@ -100,7 +100,7 @@ export class BookService {
   async findAll(paginationDto?: PaginationDto) {
     const { page, pageSize } = paginationDto;
     if (page && pageSize) {
-      const [pagedProducts, total] = await this.userRepo.findAndCount({
+      const [pagedProducts, total] = await this.bookRepo.findAndCount({
         relations: ['categories'],
         skip: (page - 1) * pageSize,
         take: pageSize,

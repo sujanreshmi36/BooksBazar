@@ -63,6 +63,7 @@ export class OrderService {
           // Create order item and set relationships
           const orderItem = new orderItemEntity();
           orderItem.book = book;
+          orderItem.price = item.price;
           orderItem.quantity = item.quantity;
           orderItem.order = order; // Set the order relationship
           return orderItem;
@@ -96,8 +97,11 @@ export class OrderService {
     return order;
   }
 
-  findAll() {
-    return `This action returns all order`;
+  async findAll(id: string) {
+    const user = await this.userRepository.findOne({
+      where: { id }
+    })
+
   }
 
   // findOne(id: number) {

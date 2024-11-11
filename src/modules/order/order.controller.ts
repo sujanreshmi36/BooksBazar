@@ -1,8 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { ApiTags, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiBody, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { roleType } from 'src/helper/types/index.type';
+import { AtGuard } from 'src/middlewares/access_token/at.guard';
+import { Roles } from 'src/middlewares/authorisation/roles.decorator';
+import { RolesGuard } from 'src/middlewares/authorisation/roles.guard';
 
 @Controller('order')
 @ApiTags('Order')
@@ -14,6 +18,10 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) { }
 
   @Post()
+  @Roles(roleType.customer)
+  @UseGuards(AtGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'create order by customer' })
   @ApiBody({ type: CreateOrderDto })
   create(@Body() createOrderDto: CreateOrderDto, @Req() req: any) {
     const id = req.user.id;
@@ -21,8 +29,13 @@ export class OrderController {
   }
 
   @Get()
-  findAll() {
-    return this.orderService.findAll();
+  @Roles(roleType.seller)
+  @UseGuards(AtGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'get all ordered books' })
+  findAll(@Req() req: any) {
+    const id = req.user.id;
+    return this.orderService.findAll(id);
   }
 
   @Get(':id')
