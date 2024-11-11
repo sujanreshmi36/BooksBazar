@@ -29,4 +29,5 @@ export class orderEntity extends parentEntity {
 
   @OneToMany(() => orderItemEntity, (item) => item.order)
   orderItem: orderItemEntity[];
+  user: any;
 }

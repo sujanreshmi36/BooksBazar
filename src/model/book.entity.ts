@@ -29,7 +29,7 @@ export class bookEntity extends parentEntity {
   edition: string;
 
   @Column({ nullable: true })
-  conditon: BookConditon;
+  condition: BookConditon;
 
   @Column({ default: null })
   photo: string;

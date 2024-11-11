@@ -1,8 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, FileTypeValidator, ParseFilePipe, UploadedFile, UseGuards, UseInterceptors, Req, Query, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  FileTypeValidator,
+  ParseFilePipe,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+  Req,
+  Query,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dto/create-book.dto';
 // import { UpdateBookDto } from './dto/update-book.dto';
-import { ApiTags, ApiResponse, ApiBearerAuth, ApiConsumes, ApiOperation, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiOperation,
+  ApiBody,
+} from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { roleType } from 'src/helper/types/index.type';
 import { UploadService } from 'src/helper/utils/files_upload';
@@ -18,12 +41,12 @@ import { PhotoUpdateDto } from './dto/photoUpdate.dto';
 @ApiResponse({ status: 401, description: 'Unathorised request' })
 @ApiResponse({ status: 400, description: 'Bad request' })
 @ApiResponse({ status: 500, description: 'Server Error' })
-
 @Controller('book')
 export class BookController {
-  constructor
-    (private readonly bookService: BookService,
-      private readonly uploadService: UploadService) { }
+  constructor(
+    private readonly bookService: BookService,
+    private readonly uploadService: UploadService,
+  ) {}
 
   @Post()
   @Roles(roleType.seller)
@@ -46,7 +69,6 @@ export class BookController {
     )
     file?: Express.Multer.File,
   ) {
-
     console.log(createBookDto);
 
     const id = req.user.id;
@@ -54,20 +76,21 @@ export class BookController {
 
     return this.bookService.create(id, createBookDto, s3response);
   }
-  @Get("getAll")
+  @Get('getAll')
   @Roles(roleType.seller)
   @UseGuards(AtGuard, RolesGuard)
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'get all books by token ' })
-  findAllBy(@Req() req: any, @Query() paginationDto?: PaginationDto
-  ) {
+  findAllBy(@Req() req: any, @Query() paginationDto?: PaginationDto) {
     const id = req.user.sub;
     return this.bookService.findAllBy(id, paginationDto);
   }
 
-  @Get("get-by-category/:id")
+  @Get('get-by-category/:id')
   @ApiOperation({ summary: 'get all products by category ' })
-  findAllByCategory(@Param('id') id: string, @Query() paginationDto?: PaginationDto
+  findAllByCategory(
+    @Param('id') id: string,
+    @Query() paginationDto?: PaginationDto,
   ) {
     return this.bookService.findAllByCategory(id, paginationDto);
   }
@@ -77,10 +100,12 @@ export class BookController {
   @UseGuards(AtGuard, RolesGuard)
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'update book info' })
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateBookDto: UpdateBookDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateBookDto: UpdateBookDto,
+  ) {
     return this.bookService.update(id, updateBookDto);
   }
-
 
   @Patch('updatePhoto/:id')
   @Roles(roleType.seller)
@@ -102,8 +127,7 @@ export class BookController {
     )
     file?: Express.Multer.File,
   ) {
-
-    const s3response = await this.uploadService.upload(file)
+    const s3response = await this.uploadService.upload(file);
     return this.bookService.updatePhoto(id, s3response);
   }
 
@@ -115,5 +139,4 @@ export class BookController {
   remove(@Param('id') id: string) {
     return this.bookService.remove(id);
   }
-
 }
