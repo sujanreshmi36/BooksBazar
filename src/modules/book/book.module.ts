@@ -3,7 +3,7 @@ import { BookService } from './book.service';
 import { BookController } from './book.controller';
 import { bookEntity } from 'src/model/book.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { categoryEntity } from 'src/model/category.entity';
+import { categoryEntity } from 'src/model/Category.entity';
 import { userEntity } from 'src/model/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { AtStrategy } from 'src/middlewares/access_token/at.strategy';
@@ -12,8 +12,15 @@ import { UploadService } from 'src/helper/utils/files_upload';
 import { viewEntity } from 'src/model/view.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([categoryEntity, userEntity, bookEntity, viewEntity])],
+  imports: [
+    TypeOrmModule.forFeature([
+      categoryEntity,
+      userEntity,
+      bookEntity,
+      viewEntity,
+    ]),
+  ],
   controllers: [BookController],
   providers: [BookService, AtStrategy, RtStrategy, JwtService, UploadService],
 })
-export class BookModule { }
+export class BookModule {}
