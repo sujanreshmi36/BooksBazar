@@ -97,6 +97,22 @@ export class BookService {
     }
   }
 
+  async findAll(paginationDto?: PaginationDto) {
+    const { page, pageSize } = paginationDto;
+    if (page && pageSize) {
+      const [pagedProducts, total] = await this.userRepo.findAndCount({
+        relations: ['categories'],
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      });
+      return { total, pagedProducts };
+    } else {
+      return await this.bookRepo.find({
+        relations: ['categories'],
+      });
+    }
+  }
+
   async findAllByCategory(id: string, paginationDto?: PaginationDto) {
     const { page, pageSize } = paginationDto;
     if (page && pageSize) {
