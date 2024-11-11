@@ -9,7 +9,7 @@ import { bookEntity } from 'src/model/book.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { categoryEntity } from 'src/model/Category.entity';
 import { userEntity } from 'src/model/user.entity';
-import { In, Like, Repository } from 'typeorm';
+import { ILike, In, Like, Repository } from 'typeorm';
 import { PaginationDto } from 'src/helper/utils/pagination.dto';
 import { viewEntity } from 'src/model/view.entity';
 
@@ -24,7 +24,7 @@ export class BookService {
     private viewRepository: Repository<viewEntity>,
     @InjectRepository(userEntity)
     private userRepo: Repository<userEntity>,
-  ) {}
+  ) { }
   async create(sellerId: string, createBookDto: CreateBookDto, photo: string) {
     const {
       title,
@@ -97,6 +97,22 @@ export class BookService {
     }
   }
 
+  async findAll(paginationDto?: PaginationDto) {
+    const { page, pageSize } = paginationDto;
+    if (page && pageSize) {
+      const [pagedProducts, total] = await this.userRepo.findAndCount({
+        relations: ['categories'],
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      });
+      return { total, pagedProducts };
+    } else {
+      return await this.bookRepo.find({
+        relations: ['categories'],
+      });
+    }
+  }
+
   async findAllByCategory(id: string, paginationDto?: PaginationDto) {
     const { page, pageSize } = paginationDto;
     if (page && pageSize) {
@@ -117,7 +133,10 @@ export class BookService {
 
   async searchBooks(query: string): Promise<bookEntity[]> {
     return await this.bookRepo.find({
-      where: [{ title: Like(`%${query}%`) }, { author: Like(`%${query}%`) }],
+      where: [
+        { title: ILike(`%${query}%`) },
+        { author: ILike(`%${query}%`) },
+      ],
     });
   }
 

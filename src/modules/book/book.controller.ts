@@ -46,7 +46,7 @@ export class BookController {
   constructor(
     private readonly bookService: BookService,
     private readonly uploadService: UploadService,
-  ) {}
+  ) { }
 
   @Post()
   @Roles(roleType.seller)
@@ -76,6 +76,13 @@ export class BookController {
 
     return this.bookService.create(id, createBookDto, s3response);
   }
+
+  @Get()
+  @ApiOperation({ summary: 'get all books ' })
+  findAll(@Query() paginationDto?: PaginationDto) {
+    return this.bookService.findAll(paginationDto);
+  }
+
   @Get('getAll')
   @Roles(roleType.seller)
   @UseGuards(AtGuard, RolesGuard)
