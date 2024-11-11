@@ -9,9 +9,10 @@ import { JwtService } from '@nestjs/jwt';
 import { AtStrategy } from 'src/middlewares/access_token/at.strategy';
 import { RtStrategy } from 'src/middlewares/refresh_token/rt.strategy';
 import { UploadService } from 'src/helper/utils/files_upload';
+import { viewEntity } from 'src/model/view.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([categoryEntity, userEntity, bookEntity])],
+  imports: [TypeOrmModule.forFeature([categoryEntity, userEntity, bookEntity, viewEntity])],
   controllers: [BookController],
   providers: [BookService, AtStrategy, RtStrategy, JwtService, UploadService],
 })

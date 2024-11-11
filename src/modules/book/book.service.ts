@@ -9,8 +9,9 @@ import { bookEntity } from 'src/model/book.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { categoryEntity } from 'src/model/category.entity';
 import { userEntity } from 'src/model/user.entity';
-import { In, Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import { PaginationDto } from 'src/helper/utils/pagination.dto';
+import { viewEntity } from 'src/model/view.entity';
 
 @Injectable()
 export class BookService {
@@ -19,6 +20,8 @@ export class BookService {
     private bookRepo: Repository<bookEntity>,
     @InjectRepository(categoryEntity)
     private categoryRepo: Repository<categoryEntity>,
+    @InjectRepository(viewEntity)
+    private viewRepository: Repository<viewEntity>,
     @InjectRepository(userEntity)
     private userRepo: Repository<userEntity>,
   ) {}
@@ -68,6 +71,14 @@ export class BookService {
     };
   }
 
+  async findOne(id: string) {
+    const book = await this.bookRepo.findOne({ where: { id } });
+    if (!book) {
+      throw new BadRequestException('Book not found');
+    }
+    return book;
+  }
+
   async findAllBy(id: string, paginationDto?: PaginationDto) {
     const { page, pageSize } = paginationDto;
     if (page && pageSize) {
@@ -104,6 +115,12 @@ export class BookService {
     }
   }
 
+  async searchBooks(query: string): Promise<bookEntity[]> {
+    return await this.bookRepo.find({
+      where: [{ title: Like(`%${query}%`) }, { author: Like(`%${query}%`) }],
+    });
+  }
+
   async update(id: string, updateBookDto: UpdateBookDto) {
     const product = await this.bookRepo.findOne({ where: { id: id } });
     const updatedProduct = Object.assign(product, updateBookDto);
@@ -115,6 +132,52 @@ export class BookService {
     const product = await this.bookRepo.findOne({ where: { id: id } });
     product.photo = photo;
     return await this.bookRepo.save(product);
+  }
+
+  async recommendBooks(userId: string): Promise<bookEntity[]> {
+    // Get the books the user has viewed
+    const userViews = await this.viewRepository.find({
+      where: { userId },
+      relations: ['book', 'book.categories'],
+    });
+
+    const viewedBooks = userViews.map((view) => view.book);
+
+    // If no books are viewed, return an empty array
+    if (viewedBooks.length === 0) {
+      return [];
+    }
+
+    // Collect attributes of viewed books
+    const categoryIds = new Set<string>();
+    const authors = new Set<string>();
+
+    viewedBooks.forEach((book) => {
+      if (book.categories) {
+        // Collect category IDs from viewed books, check if categories exist
+        book.categories.forEach((category) => categoryIds.add(category.id));
+      }
+
+      if (book.author) {
+        authors.add(book.author);
+      }
+    });
+
+    // Query books using queryBuilder
+    const queryBuilder = this.bookRepo
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.categories', 'category')
+      .where('category.id IN (:...categoryIds)', {
+        categoryIds: Array.from(categoryIds),
+      })
+      .orWhere('book.author IN (:...authors)', { authors: Array.from(authors) })
+      .take(10); // Limit to 10 recommendations
+
+    const recommendedBooks = await queryBuilder.getMany();
+
+    // Exclude books the user has already viewed
+    const viewedBookIds = new Set(viewedBooks.map((book) => book.id));
+    return recommendedBooks.filter((book) => !viewedBookIds.has(book.id));
   }
 
   async remove(id: string) {

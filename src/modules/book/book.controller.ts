@@ -86,6 +86,22 @@ export class BookController {
     return this.bookService.findAllBy(id, paginationDto);
   }
 
+  @Get('recommendations')
+  async getRecommendations(@Query('userId') userId: string) {
+    return this.bookService.recommendBooks(userId);
+  }
+
+  @Get('search')
+  async search(@Query('query') query: string) {
+    return this.bookService.searchBooks(query);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'get book by id ' })
+  findOne(@Param('id') id: string) {
+    return this.bookService.findOne(id);
+  }
+
   @Get('get-by-category/:id')
   @ApiOperation({ summary: 'get all products by category ' })
   findAllByCategory(

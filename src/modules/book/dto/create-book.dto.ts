@@ -39,7 +39,7 @@ export class CreateBookDto {
     price: number;
 
     @ApiProperty()
-    @IsArray()
+    // @IsArray()
     @IsUUID("all", { each: true })
     categoryIds: string[];
 }
