@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { bookEntity } from 'src/model/book.entity';
@@ -19,32 +23,39 @@ export class BookService {
     @InjectRepository(viewEntity)
     private viewRepository: Repository<viewEntity>,
     @InjectRepository(userEntity)
-    private userRepo: Repository<userEntity>
+    private userRepo: Repository<userEntity>,
   ) { }
   async create(sellerId: string, createBookDto: CreateBookDto, photo: string) {
-    const { title, description, price, condition, publisher, author, edition, categoryIds } = createBookDto;
-
+    const {
+      title,
+      description,
+      price,
+      condition,
+      publisher,
+      author,
+      edition,
+      categoryIds,
+    } = createBookDto;
 
     // Fetch categories based on provided category IDs and verify them
     const categories = await this.categoryRepo.find({
-      where: { id: In(categoryIds) }
+      where: { id: In(categoryIds) },
     });
 
     if (categories.length !== categoryIds.length) {
-      throw new BadRequestException("Some category IDs are invalid");
+      throw new BadRequestException('Some category IDs are invalid');
     }
 
     // Check if the seller exists
     const seller = await this.userRepo.findOne({ where: { id: sellerId } });
     if (!seller) {
-      throw new NotFoundException("Seller not found");
+      throw new NotFoundException('Seller not found');
     }
 
-
-    const book = new bookEntity()
-    book.author = author
+    const book = new bookEntity();
+    book.author = author;
     book.categories = categories;
-    book.conditon = condition;
+    book.condition = condition;
     book.description = description;
     book.edition = edition;
     book.photo = photo;
@@ -55,7 +66,7 @@ export class BookService {
     const savedBook = await this.bookRepo.save(book);
 
     return {
-      message: "Book added successfully.",
+      message: 'Book added successfully.',
       data: savedBook,
     };
   }
@@ -63,43 +74,46 @@ export class BookService {
   async findOne(id: string) {
     const book = await this.bookRepo.findOne({ where: { id } });
     if (!book) {
-      throw new BadRequestException("Book not found");
+      throw new BadRequestException('Book not found');
     }
     return book;
   }
 
-  async findAllBy(id: string, paginationDto?: PaginationDto,) {
+  async findAllBy(id: string, paginationDto?: PaginationDto) {
     const { page, pageSize } = paginationDto;
     if (page && pageSize) {
       const [pagedProducts, total] = await this.userRepo.findAndCount({
         where: { categories: { user: { id } } },
         relations: ['categories'],
         skip: (page - 1) * pageSize,
-        take: pageSize
+        take: pageSize,
       });
       return { total, pagedProducts };
     } else {
-      return await this.bookRepo.find({ where: { categories: { user: { id } } }, relations: ['categories'] },);
+      return await this.bookRepo.find({
+        where: { categories: { user: { id } } },
+        relations: ['categories'],
+      });
     }
-
   }
 
-  async findAllByCategory(id: string, paginationDto?: PaginationDto,) {
+  async findAllByCategory(id: string, paginationDto?: PaginationDto) {
     const { page, pageSize } = paginationDto;
     if (page && pageSize) {
       const [pagedProducts, total] = await this.bookRepo.findAndCount({
         where: { categories: { id } },
         relations: ['categories'],
         skip: (page - 1) * pageSize,
-        take: pageSize
+        take: pageSize,
       });
       return { total, pagedProducts };
     } else {
-      return await this.bookRepo.find({ where: { categories: { id } }, relations: ['categories'] });
+      return await this.bookRepo.find({
+        where: { categories: { id } },
+        relations: ['categories'],
+      });
     }
-
   }
-
 
   async searchBooks(query: string): Promise<bookEntity[]> {
     return await this.bookRepo.find({
@@ -114,7 +128,7 @@ export class BookService {
     const product = await this.bookRepo.findOne({ where: { id: id } });
     const updatedProduct = Object.assign(product, updateBookDto);
     const response = await this.bookRepo.save(updatedProduct);
-    return { ...response }
+    return { ...response };
   }
 
   async updatePhoto(id: string, photo: string) {
@@ -125,9 +139,12 @@ export class BookService {
 
   async recommendBooks(userId: string): Promise<bookEntity[]> {
     // Get the books the user has viewed
-    const userViews = await this.viewRepository.find({ where: { userId }, relations: ['book', 'book.categories'] });
+    const userViews = await this.viewRepository.find({
+      where: { userId },
+      relations: ['book', 'book.categories'],
+    });
 
-    const viewedBooks = userViews.map(view => view.book);
+    const viewedBooks = userViews.map((view) => view.book);
 
     // If no books are viewed, return an empty array
     if (viewedBooks.length === 0) {
@@ -138,11 +155,10 @@ export class BookService {
     const categoryIds = new Set<string>();
     const authors = new Set<string>();
 
-    viewedBooks.forEach(book => {
-
+    viewedBooks.forEach((book) => {
       if (book.categories) {
         // Collect category IDs from viewed books, check if categories exist
-        book.categories.forEach(category => categoryIds.add(category.id));
+        book.categories.forEach((category) => categoryIds.add(category.id));
       }
 
       if (book.author) {
@@ -150,22 +166,22 @@ export class BookService {
       }
     });
 
-
-
     // Query books using queryBuilder
-    const queryBuilder = this.bookRepo.createQueryBuilder('book')
+    const queryBuilder = this.bookRepo
+      .createQueryBuilder('book')
       .leftJoinAndSelect('book.categories', 'category')
-      .where('category.id IN (:...categoryIds)', { categoryIds: Array.from(categoryIds) })
+      .where('category.id IN (:...categoryIds)', {
+        categoryIds: Array.from(categoryIds),
+      })
       .orWhere('book.author IN (:...authors)', { authors: Array.from(authors) })
       .take(10); // Limit to 10 recommendations
 
     const recommendedBooks = await queryBuilder.getMany();
 
     // Exclude books the user has already viewed
-    const viewedBookIds = new Set(viewedBooks.map(book => book.id));
-    return recommendedBooks.filter(book => !viewedBookIds.has(book.id));
+    const viewedBookIds = new Set(viewedBooks.map((book) => book.id));
+    return recommendedBooks.filter((book) => !viewedBookIds.has(book.id));
   }
-
 
   async remove(id: string) {
     const product = await this.bookRepo.findOne({ where: { id: id } });
@@ -174,6 +190,4 @@ export class BookService {
     }
     return await this.bookRepo.remove(product);
   }
-
-
 }

@@ -32,5 +32,4 @@ export class orderEntity extends parentEntity {
 
   @ManyToOne(() => userEntity, (user) => user.orders)
   user: userEntity;
-
 }
