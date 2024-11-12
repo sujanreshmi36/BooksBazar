@@ -14,6 +14,7 @@ export class ViewService {
     @InjectRepository(bookEntity)
     private booksRepository: Repository<bookEntity>,
   ) { }
+
   async recordView(userId: string, bookId: string) {
     const book = await this.booksRepository.findOne({ where: { id: bookId } });
     if (!book) throw new Error('Book not found');

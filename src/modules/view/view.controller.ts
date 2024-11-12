@@ -1,8 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Req } from '@nestjs/common';
 import { ViewService } from './view.service';
 import { CreateViewDto } from './dto/create-view.dto';
 import { UpdateViewDto } from './dto/update-view.dto';
-import { ApiTags, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiBody, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { roleType } from 'src/helper/types/index.type';
+import { AtGuard } from 'src/middlewares/access_token/at.guard';
+import { Roles } from 'src/middlewares/authorisation/roles.decorator';
+import { RolesGuard } from 'src/middlewares/authorisation/roles.guard';
 
 @Controller('view')
 @ApiTags('View')
@@ -14,9 +18,15 @@ export class ViewController {
   constructor(private readonly viewService: ViewService) { }
 
   @Post()
+  @Roles(roleType.customer)
+  @UseGuards(AtGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'create view' })
   @ApiBody({ type: CreateViewDto })
-  async recordView(@Body() body: { userId: string, bookId: string }) {
-    return this.viewService.recordView(body.userId, body.bookId);
+  async recordView(@Req() req: any, createViewDto: CreateViewDto) {
+    const userId = req.user.id;
+    const { bookId } = createViewDto;
+    return this.viewService.recordView(userId, bookId);
   }
 
   // @Get('history')
