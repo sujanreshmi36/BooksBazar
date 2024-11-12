@@ -74,19 +74,7 @@ export type JwtPayload = {
     id?: string;
 };
 
-export interface clientEventId {
-    clientId: string,
-    eventId: string,
-}
 
-export enum otpRequestType {
-    register = "register",
-    forgotPassword = 'forgotPassword'
-}
-export enum RestaurantStatus {
-    active = "active",
-    inactive = "inactive"
-}
 
 export enum CategoryStatus {
     available = "available",
@@ -96,4 +84,9 @@ export enum CategoryStatus {
 export enum ProductStatus {
     available = "available",
     unavailabe = "unavailable"
+}
+
+export enum BookStatus {
+    Available = 'Available',
+    Sold = 'Sold',
 }

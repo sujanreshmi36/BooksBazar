@@ -12,6 +12,7 @@ import { userEntity } from 'src/model/user.entity';
 import { ILike, In, Like, Repository } from 'typeorm';
 import { PaginationDto } from 'src/helper/utils/pagination.dto';
 import { viewEntity } from 'src/model/view.entity';
+import { BookStatus } from 'src/helper/types/index.type';
 
 @Injectable()
 export class BookService {
@@ -72,7 +73,7 @@ export class BookService {
   }
 
   async findOne(id: string) {
-    const book = await this.bookRepo.findOne({ where: { id } });
+    const book = await this.bookRepo.findOne({ where: { id, status: BookStatus.Available } });
     if (!book) {
       throw new BadRequestException('Book not found');
     }
@@ -83,7 +84,7 @@ export class BookService {
     const { page, pageSize } = paginationDto;
     if (page && pageSize) {
       const [pagedProducts, total] = await this.bookRepo.findAndCount({
-        where: { categories: { user: { id } } },
+        where: { categories: { user: { id }, }, status: BookStatus.Available },
         relations: ['categories'],
         skip: (page - 1) * pageSize,
         take: pageSize,
@@ -91,7 +92,7 @@ export class BookService {
       return { total, pagedProducts };
     } else {
       return await this.bookRepo.find({
-        where: { categories: { user: { id } } },
+        where: { categories: { user: { id } }, status: BookStatus.Available },
         relations: ['categories'],
       });
     }
@@ -101,6 +102,7 @@ export class BookService {
     const { page, pageSize } = paginationDto;
     if (page && pageSize) {
       const [pagedProducts, total] = await this.bookRepo.findAndCount({
+        where: { status: BookStatus.Available },
         relations: ['categories'],
         skip: (page - 1) * pageSize,
         take: pageSize,
@@ -108,6 +110,7 @@ export class BookService {
       return { total, pagedProducts };
     } else {
       return await this.bookRepo.find({
+        where: { status: BookStatus.Available },
         relations: ['categories'],
       });
     }
@@ -117,7 +120,7 @@ export class BookService {
     const { page, pageSize } = paginationDto;
     if (page && pageSize) {
       const [pagedProducts, total] = await this.bookRepo.findAndCount({
-        where: { categories: { id } },
+        where: { categories: { id }, status: BookStatus.Available },
         relations: ['categories'],
         skip: (page - 1) * pageSize,
         take: pageSize,
@@ -125,7 +128,7 @@ export class BookService {
       return { total, pagedProducts };
     } else {
       return await this.bookRepo.find({
-        where: { categories: { id } },
+        where: { categories: { id }, status: BookStatus.Available },
         relations: ['categories'],
       });
     }
@@ -136,19 +139,20 @@ export class BookService {
       where: [
         { title: ILike(`%${query}%`) },
         { author: ILike(`%${query}%`) },
+        { status: BookStatus.Available }
       ],
     });
   }
 
   async update(id: string, updateBookDto: UpdateBookDto) {
-    const product = await this.bookRepo.findOne({ where: { id: id } });
+    const product = await this.bookRepo.findOne({ where: { id } });
     const updatedProduct = Object.assign(product, updateBookDto);
     const response = await this.bookRepo.save(updatedProduct);
     return { ...response };
   }
 
   async updatePhoto(id: string, photo: string) {
-    const product = await this.bookRepo.findOne({ where: { id: id } });
+    const product = await this.bookRepo.findOne({ where: { id } });
     product.photo = photo;
     return await this.bookRepo.save(product);
   }

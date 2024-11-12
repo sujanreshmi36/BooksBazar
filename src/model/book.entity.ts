@@ -9,7 +9,7 @@ import {
 import { parentEntity } from '.';
 import { categoryEntity } from './Category.entity';
 import { orderItemEntity } from './order_item.entity';
-import { BookConditon } from 'src/helper/types/index.type';
+import { BookConditon, BookStatus } from 'src/helper/types/index.type';
 import { viewEntity } from './view.entity';
 
 @Entity('Book')
@@ -37,6 +37,9 @@ export class bookEntity extends parentEntity {
 
   @Column()
   price: number;
+
+  @Column({ default: BookStatus.Available })
+  status: BookStatus;
 
   @ManyToMany(() => categoryEntity, (category) => category.books)
   @JoinTable({ name: 'category_bookId' })
