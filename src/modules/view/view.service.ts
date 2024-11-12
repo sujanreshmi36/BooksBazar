@@ -20,7 +20,7 @@ export class ViewService {
     if (!book) throw new Error('Book not found');
 
     const view = this.viewsRepository.create({ userId, book });
-    await this.viewsRepository.save(view);
+    return await this.viewsRepository.save(view);
   }
 
   async getViewedBooks(userId: string): Promise<bookEntity[]> {

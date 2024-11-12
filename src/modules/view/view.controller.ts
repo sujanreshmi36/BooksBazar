@@ -23,9 +23,10 @@ export class ViewController {
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'create view' })
   @ApiBody({ type: CreateViewDto })
-  async recordView(@Req() req: any, createViewDto: CreateViewDto) {
+  async recordView(@Req() req: any, @Body() createViewDto: CreateViewDto) {
     const userId = req.user.id;
     const { bookId } = createViewDto;
+
     return this.viewService.recordView(userId, bookId);
   }
 
