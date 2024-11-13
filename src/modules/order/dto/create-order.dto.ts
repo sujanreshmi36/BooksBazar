@@ -15,7 +15,7 @@ class OrderInfo {
 
     @ApiProperty({ description: "ID of the book ordered" })
     @IsString()
-    book: string;
+    bookId: string;
 }
 
 export class CreateOrderDto {
