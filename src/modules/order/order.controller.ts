@@ -28,15 +28,7 @@ export class OrderController {
     return this.orderService.create(id, createOrderDto);
   }
 
-  @Get('getall-soldBooks')
-  @Roles(roleType.seller)
-  @UseGuards(AtGuard, RolesGuard)
-  @ApiBearerAuth('access-token')
-  @ApiOperation({ summary: 'get all ordered books by seller' })
-  findAll(@Req() req: any) {
-    const id = req.user.id;
-    return this.orderService.findAll(id);
-  }
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -44,9 +36,9 @@ export class OrderController {
   }
 
   // Complete Order and Delete Books
-  @Patch(':orderId/complete')
-  async completeOrder(@Param('orderId') orderId: string) {
-    return this.orderService.completeOrder(orderId);
+  @Patch(':token/complete')
+  async completeOrder(@Param('token') token: string) {
+    return this.orderService.completeOrder(token);
   }
 
   // @Patch('complete-order/:id')

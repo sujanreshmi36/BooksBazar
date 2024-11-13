@@ -1,6 +1,6 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
+import * as jwt from "jsonwebtoken";
 import { InjectRepository } from '@nestjs/typeorm';
 import { orderEntity } from 'src/model/order.entity';
 import { orderItemEntity } from 'src/model/order_item.entity';
@@ -96,20 +96,23 @@ export class OrderService {
     return order;
   }
 
-  async findAll(id: string) {
 
-    const books = await this.bookRepository.find({ where: { status: BookStatus.Sold, user: { id } } });
-    console.log(books);
-
-  }
 
   // Method to mark order as completed and change book status to 'Sold'
-  async completeOrder(orderId: string) {
+  async completeOrder(token: string) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
+      token = token.split(' ')[1];
+      let decodedToken;
+
+      decodedToken = await jwt.verify(token, process.env.ESEWA_SECRET);
+      if (!decodedToken) {
+        throw new ForbiddenException("Token malformed")
+      }
+      const { orderId } = decodedToken;
       // Find the order by ID
       const order = await this.orderRepository.findOne({
         where: { id: orderId },
