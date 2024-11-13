@@ -6,8 +6,6 @@ import { bookEntity } from './book.entity';
 
 @Entity('orderItem')
 export class orderItemEntity extends parentEntity {
-  @Column()
-  quantity: number;
 
   @Column()
   price: number;

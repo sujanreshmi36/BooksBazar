@@ -64,7 +64,6 @@ export class OrderService {
           const orderItem = new orderItemEntity();
           orderItem.book = book;
           orderItem.price = item.price;
-          orderItem.quantity = item.quantity;
           orderItem.order = order; // Set the order relationship
           return orderItem;
         }),

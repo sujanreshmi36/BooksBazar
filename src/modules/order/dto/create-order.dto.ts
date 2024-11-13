@@ -3,10 +3,6 @@ import { Transform, Type } from "class-transformer";
 import { IsArray, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
 
 class OrderInfo {
-    @ApiProperty({ description: "Quantity of the book ordered" })
-    @Type(() => Number)  // This will handle number conversion correctly
-    @IsNumber()
-    quantity: number;
 
     @ApiProperty({ description: "Price of the book ordered" })
     @Type(() => Number)  // Handles number conversion correctly
