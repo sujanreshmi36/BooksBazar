@@ -15,6 +15,8 @@ export class PaymentService {
 
 
   async initiatePayment(amount: number, orderId: string): Promise<string> {
+    // Ensure unique transaction UUID for each attempt
+    const uniqueOrderId = `${orderId}-${Date.now()}`;
     let paymentData = {
       amount: amount.toString(),
       failure_url: this.esewaConfig.failureUrl,
@@ -25,7 +27,7 @@ export class PaymentService {
       success_url: this.esewaConfig.successUrl,
       tax_amount: '0',
       total_amount: amount.toString(),
-      transaction_uuid: orderId,
+      transaction_uuid: uniqueOrderId,
     } as any;
 
     const data = `total_amount=${paymentData.total_amount},transaction_uuid=${paymentData.transaction_uuid},product_code=${paymentData.product_code}`;
