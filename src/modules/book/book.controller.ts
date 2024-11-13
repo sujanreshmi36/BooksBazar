@@ -103,6 +103,16 @@ export class BookController {
     return this.bookService.searchBooks(query);
   }
 
+  @Get('getall-soldbooks')
+  @Roles(roleType.seller)
+  @UseGuards(AtGuard, RolesGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'get all ordered books by seller' })
+  findAllSold(@Req() req: any) {
+    const id = req.user.id;
+    return this.bookService.findAllSold(id);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'get book by id ' })
   findOne(@Param('id') id: string) {

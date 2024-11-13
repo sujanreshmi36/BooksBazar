@@ -63,6 +63,7 @@ export class BookService {
     book.price = price;
     book.publisher = publisher;
     book.title = title;
+    book.user = seller;
 
     const savedBook = await this.bookRepo.save(book);
 
@@ -84,7 +85,7 @@ export class BookService {
     const { page, pageSize } = paginationDto;
     if (page && pageSize) {
       const [pagedProducts, total] = await this.bookRepo.findAndCount({
-        where: { categories: { user: { id }, }, status: BookStatus.Available },
+        where: { user: { id }, status: BookStatus.Available },
         relations: ['categories'],
         skip: (page - 1) * pageSize,
         take: pageSize,
@@ -132,6 +133,12 @@ export class BookService {
         relations: ['categories'],
       });
     }
+  }
+
+  async findAllSold(id: string) {
+
+    return await this.bookRepo.find({ where: { status: BookStatus.Sold, user: { id } } });
+
   }
 
   async searchBooks(query: string): Promise<bookEntity[]> {

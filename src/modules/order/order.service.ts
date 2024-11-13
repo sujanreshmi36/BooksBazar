@@ -97,12 +97,9 @@ export class OrderService {
   }
 
   async findAll(id: string) {
-    const user = await this.userRepository.findOne({
-      where: { id }
-    });
-    if (user) {
-      const category = await this.userRepository.findOne
-    }
+
+    const books = await this.bookRepository.find({ where: { status: BookStatus.Sold, user: { id } } });
+    console.log(books);
 
   }
 
@@ -154,18 +151,20 @@ export class OrderService {
   }
 
 
-  async getOrders(id: string) {
-    const book = await this.userRepository.find({ where: {} })
+  // async getOrders(id: string) {
+  //   const book = await this.bookRepository.find({ where: { user: { id }, status: BookStatus.Sold } });
+  //   return book;
 
-  }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} order`;
   // }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
-  }
+  //  async update(id:string) {
+  //     const order=await this.orderRepository.findOne({where:{id}});
+  //     if(!order){
+  //       throw new BadRequestException("order not found");
+  //     }
+  //     order.status=orderStatus.completed;
+  //     return this.orderRepository.save(order)
+  //   }
   async remove(id: string) {
     await this.orderRepository.delete({ id });
     return true;

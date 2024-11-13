@@ -28,11 +28,11 @@ export class OrderController {
     return this.orderService.create(id, createOrderDto);
   }
 
-  @Get()
+  @Get('getall-soldBooks')
   @Roles(roleType.seller)
   @UseGuards(AtGuard, RolesGuard)
   @ApiBearerAuth('access-token')
-  @ApiOperation({ summary: 'get all ordered books' })
+  @ApiOperation({ summary: 'get all ordered books by seller' })
   findAll(@Req() req: any) {
     const id = req.user.id;
     return this.orderService.findAll(id);
@@ -49,10 +49,10 @@ export class OrderController {
     return this.orderService.completeOrder(orderId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.orderService.update(+id, updateOrderDto);
-  }
+  // @Patch('complete-order/:id')
+  // update(@Param('id') id: string) {
+  //   return this.orderService.update(id,);
+  // }
 
 
   @Delete(':id')

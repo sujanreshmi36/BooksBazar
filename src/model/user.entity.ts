@@ -4,6 +4,7 @@ import { roleType } from 'src/helper/types/index.type';
 import { categoryEntity } from './Category.entity';
 import { orderEntity } from './order.entity';
 import { viewEntity } from './view.entity';
+import { bookEntity } from './book.entity';
 
 @Entity('User')
 export class userEntity extends parentEntity {
@@ -30,4 +31,7 @@ export class userEntity extends parentEntity {
 
   @OneToMany(() => viewEntity, (view) => view.user)
   views: viewEntity[];
+
+  @OneToMany(() => bookEntity, (book) => book.user)
+  books: bookEntity[];
 }
