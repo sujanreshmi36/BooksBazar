@@ -17,7 +17,7 @@ export class orderItemEntity extends parentEntity {
   })
   book: bookEntity;
 
-  @ManyToOne(() => orderEntity, (order) => order.orderItem, {
+  @ManyToOne(() => orderEntity, (order) => order.orderItems, {
     onDelete: 'CASCADE',
   })
   order: orderEntity;

@@ -43,6 +43,12 @@ export class OrderController {
     return this.orderService.findOne(id);
   }
 
+  // Complete Order and Delete Books
+  @Patch(':orderId/complete')
+  async completeOrder(@Param('orderId') orderId: string) {
+    return this.orderService.completeOrder(orderId);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     return this.orderService.update(+id, updateOrderDto);

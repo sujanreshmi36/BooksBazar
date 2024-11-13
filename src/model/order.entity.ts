@@ -28,7 +28,7 @@ export class orderEntity extends parentEntity {
   phone: string;
 
   @OneToMany(() => orderItemEntity, (item) => item.order)
-  orderItem: orderItemEntity[];
+  orderItems: orderItemEntity[];
 
   @ManyToOne(() => userEntity, (user) => user.orders)
   user: userEntity;
