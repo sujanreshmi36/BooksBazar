@@ -11,16 +11,16 @@ export class PaymentController {
   async initiatePayment(
     @Body() createPaymentDto: CreatePaymentDto
   ) {
-    const { amount, productId } = createPaymentDto;
+    const { amount, orderId } = createPaymentDto;
 
-    if (!amount || !productId) {
+    if (!amount || !orderId) {
       throw new BadRequestException('Amount and productId are required');
       ;
     }
 
 
     try {
-      const paymentUrl = await this.paymentService.initiatePayment(amount, productId);
+      const paymentUrl = await this.paymentService.initiatePayment(amount, orderId);
       return {
         status: HttpStatus.OK,
         url: paymentUrl

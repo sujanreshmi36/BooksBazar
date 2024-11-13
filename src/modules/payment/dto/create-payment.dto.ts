@@ -5,10 +5,10 @@ import { IsNumber, IsString } from "class-validator";
 export class CreatePaymentDto {
     @ApiProperty()
     @IsString()
-    productId: string;
+    orderId: string;
 
 
-    @ApiProperty({ description: "amunt" })
+    @ApiProperty({ description: "amount" })
     @Type(() => Number)
     @IsNumber()
     amount: number;
