@@ -132,12 +132,11 @@ export class OrderService {
 
       // Change the status of each ordered book to 'Sold'
       for (const item of order.orderItems) {
-        const bookId = item.book.id;
-        const book = await this.bookRepository.findOne({ where: { id: bookId } });
-        if (book) {
-          book.status = BookStatus.Sold;  // Mark book as 'Sold'
-          await queryRunner.manager.save(book);  // Save the updated book status
-          console.log(`Book with ID ${bookId} has been marked as sold`);
+        const book = item.book;
+        if (book && book.status !== BookStatus.Sold) {
+          book.status = BookStatus.Sold; // Mark book as 'Sold'
+          await queryRunner.manager.save(book); // Save the updated book status
+          console.log(`Book with ID ${book.id} has been marked as sold`);
         }
       }
 
@@ -154,6 +153,7 @@ export class OrderService {
       await queryRunner.release();
     }
   }
+
 
   async getOrders(id: string) {
     const book = await this.userRepository.find({ where: {} })
