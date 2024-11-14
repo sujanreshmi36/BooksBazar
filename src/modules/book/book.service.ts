@@ -144,9 +144,8 @@ export class BookService {
   async searchBooks(query: string): Promise<bookEntity[]> {
     return await this.bookRepo.find({
       where: [
-        { title: ILike(`%${query}%`) },
-        { author: ILike(`%${query}%`) },
-        { status: BookStatus.Available }
+        { title: ILike(`%${query}%`), status: BookStatus.Available },
+        { author: ILike(`%${query}%`), status: BookStatus.Available }
       ],
     });
   }
