@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { GlobalExceptionFilter } from './exceptions/global.exception';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -41,7 +42,9 @@ async function bootstrap() {
     }),
   );
   await app.listen(3000);
+
 }
+
 bootstrap()
   .then(() => {
     console.log('Server started in http://localhost:3000/api');
