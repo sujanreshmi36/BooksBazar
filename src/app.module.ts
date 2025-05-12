@@ -5,11 +5,11 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CategoryModule } from './modules/category/category.module';
 import { BookModule } from './modules/book/book.module';
 import { OrderModule } from './modules/order/order.module';
-import { OrderItemModule } from './modules/order_item/order_item.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { UserModule } from './modules/user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ViewModule } from './modules/view/view.module';
 import databaseConfig from './config/pg.config';
 
 @Module({
@@ -17,7 +17,7 @@ import databaseConfig from './config/pg.config';
     isGlobal: true,
   }),
   TypeOrmModule.forRoot(databaseConfig),
-    AuthModule, CategoryModule, BookModule, OrderModule, OrderItemModule, PaymentModule, UserModule],
+    AuthModule, CategoryModule, BookModule, OrderModule, PaymentModule, UserModule, ViewModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,35 +1,57 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
-import { parentEntity } from ".";
-import { categoryEntity } from "./category.entity";
-import { orderItemEntity } from "./order_item.entity";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
+import { parentEntity } from '.';
+import { categoryEntity } from './Category.entity';
+import { orderItemEntity } from './order_item.entity';
+import { BookConditon, BookStatus } from 'src/helper/types/index.type';
+import { viewEntity } from './view.entity';
+import { userEntity } from './user.entity';
 
 @Entity('Book')
 export class bookEntity extends parentEntity {
-    @Column()
-    name: string;
+  @Column()
+  title: string;
 
-    @Column()
-    description: string;
+  @Column()
+  description: string;
 
-    @Column()
-    author: string;
+  @Column()
+  author: string;
 
-    @Column()
-    publisher: string;
+  @Column()
+  publisher: string;
 
-    @Column()
-    edition: string;
+  @Column()
+  edition: string;
 
-    @Column()
-    conditon: string;
+  @Column({ nullable: true })
+  condition: BookConditon;
 
-    @Column({ default: null })
-    photo: string;
+  @Column({ default: null })
+  photo: string;
 
-    @ManyToMany(() => categoryEntity, (category) => category.books)
-    @JoinTable({ name: 'category_bookId' })
-    categories: categoryEntity[];
+  @Column()
+  price: number;
 
-    @OneToMany(() => orderItemEntity, (order) => order.books)
-    orderItem: orderItemEntity[];
+  @Column({ default: BookStatus.Available })
+  status: BookStatus;
+
+  @ManyToMany(() => categoryEntity, (category) => category.books)
+  @JoinTable({ name: 'category_bookId' })
+  categories: categoryEntity[];
+
+  @OneToMany(() => orderItemEntity, (order) => order.book)
+  orderItems: orderItemEntity[];
+
+  @OneToMany(() => viewEntity, (view) => view.book)
+  views: viewEntity[];
+
+  @ManyToOne(() => userEntity, (user) => user.books)
+  user: userEntity;
 }

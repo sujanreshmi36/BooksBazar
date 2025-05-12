@@ -1,35 +1,27 @@
 
 export enum roleType {
-    admin='admin',
-    superAdmin='superAdmin',
-    customer = 'customer',
-    staff='staff'
+    admin = 'admin',
+    seller = 'seller',
+    customer = 'customer'
 }
 
-export enum enrollStatus {
-    approved = "approved",
-    pending = "pending",
-    reject="reject"
+export enum BookConditon {
+    NEW = "New",
+    LIKE_NEW = "Like New",
+    VERY_GOOD = "Very Good",
+    GOOD = "Good",
+    ACCEPTABLE = "Acceptable",
+    POOR = "Poor"
 }
-
-export enum tableStatus{
-    occupied='occupied',
-    available='available'
-}
-
 
 export enum orderStatus {
-    pending='pending',
-    accepted='accepted',
+    pending = 'pending',
+    accepted = 'accepted',
     completed = "completed",
     partiallyDelivered = "partiallyDelivered",
-    canceled= "canceled"
+    canceled = "canceled"
 }
 
-export enum callType{
-    incoming='incoming',
-    outgoing='outgoing'
-}
 
 export enum documentType {
     citizenship = "citizenship",
@@ -60,7 +52,7 @@ export enum requestType {
 
 export enum billingStatus {
     paid = "paid",
-    partiallyPaid="partiallyPaid",
+    partiallyPaid = "partiallyPaid",
     unpaid = "unpaid"
 }
 
@@ -77,23 +69,12 @@ export enum genderType {
 }
 
 export type JwtPayload = {
-    sub: string;
-    role: string;
+    email: string;
+    role?: string;
+    id?: string;
 };
 
-export interface clientEventId {
-    clientId: string,
-    eventId: string,
-}
 
-export enum otpRequestType {
-    register="register",
-    forgotPassword='forgotPassword'
-}
-export enum RestaurantStatus {
-    active = "active",
-    inactive = "inactive"
-}
 
 export enum CategoryStatus {
     available = "available",
@@ -103,4 +84,9 @@ export enum CategoryStatus {
 export enum ProductStatus {
     available = "available",
     unavailabe = "unavailable"
+}
+
+export enum BookStatus {
+    Available = 'Available',
+    Sold = 'Sold',
 }

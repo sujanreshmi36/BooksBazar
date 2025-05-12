@@ -1,15 +1,114 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Headers, ForbiddenException, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { ApiTags, ApiResponse, ApiOperation, ApiBody, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import { verifyEmailDTO } from './dto/verify-email.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { loginUserDto } from './dto/login-user.dto';
+import { RtGuard } from 'src/middlewares/refresh_token/rt.guard';
+import { forgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { CreateSellerDto } from './dto/create-seller.dto';
+import { CreateAdminDto } from './dto/create-admin.dto';
 
+@ApiTags('Auth')
+@ApiResponse({ status: 201, description: 'Created Successfully' })
+@ApiResponse({ status: 401, description: 'Unathorised request' })
+@ApiResponse({ status: 400, description: 'Bad request' })
+@ApiResponse({ status: 500, description: 'Server Error' })
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  //get email for verification
+  @Post('get-verify')
+  @ApiOperation({ summary: 'get your email verified' })
+  @ApiBody({ type: verifyEmailDTO })
+  getVerify(@Body() verifyEmailDto: verifyEmailDTO) {
+    return this.authService.getVerify(verifyEmailDto);
+  }
+
+  //get email for verification
+  @Post('verify-seller')
+  @ApiOperation({ summary: 'get your email verified' })
+  @ApiBody({ type: verifyEmailDTO })
+  Verify(@Body() verifyEmailDto: verifyEmailDTO) {
+    return this.authService.verifySeller(verifyEmailDto);
+  }
+
+
+  @Post('create-customer')
+  @ApiOperation({ summary: 'create your customer account' })
+  @ApiBody({ type: CreateUserDto })
+  @ApiHeader({ name: 'Authorization', description: 'Bearer token', required: true })
+  create(@Body() createUserDto: CreateUserDto,
+    @Headers('Authorization') token: string) {
+    console.log(token);
+
+    if (!token) {
+      throw new ForbiddenException("Insufficient payload")
+    }
+    return this.authService.create(createUserDto, token);
+  }
+
+  @Post('create-seller')
+  @ApiOperation({ summary: 'create your seller account' })
+  @ApiBody({ type: CreateSellerDto })
+  @ApiHeader({ name: 'Authorization', description: 'Bearer token', required: true })
+  createseller(@Body() createSellerDto: CreateSellerDto,
+    @Headers('Authorization') token: string) {
+
+
+    if (!token) {
+      throw new ForbiddenException("Insufficient payload")
+    }
+    return this.authService.createseller(createSellerDto, token);
+  }
+
+  @Post('create-admin')
+  @ApiOperation({ summary: 'create your admin account' })
+  @ApiBody({ type: CreateAdminDto })
+  @ApiHeader({ name: 'Authorization', description: 'Bearer token', required: true })
+  createAdmin(@Body() createAdminDto: CreateAdminDto,
+    @Headers('Authorization') token: string) {
+
+
+    if (!token) {
+      throw new ForbiddenException("Insufficient payload")
+    }
+    return this.authService.createAdmin(createAdminDto, token);
+  }
+
+  @Post('signin')
+  @ApiOperation({ summary: 'SignIn your Account' })
+  login(@Body() LoginUserDto: loginUserDto) {
+    return this.authService.login(LoginUserDto)
+  }
+
+  @Post('refresh-token')
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: "Generate access token" })
+  @UseGuards(RtGuard)
+  async refrshToken(@Req() req) {
+    const { user } = req
+    return this.authService.refreshTokenAdmin(user);
+  }
+
+  //forgot-password
+  @Post('forgot-password')
+  @ApiOperation({ summary: 'forgot password' })
+  @ApiBody({ type: forgotPasswordDto })
+  forgot(@Body() ForgotPasswordDto: forgotPasswordDto) {
+    return this.authService.forgot(ForgotPasswordDto);
+  }
+
+
+  //rest-password
+  @Post('reset-password')
+  @ApiOperation({ summary: 'reset password' })
+  @ApiBody({ type: ResetPasswordDto })
+  reset(@Body() resetPasswordDto: ResetPasswordDto, @Headers('Authorization') token: string) {
+    return this.authService.reset(resetPasswordDto, token);
   }
 
   @Get()
